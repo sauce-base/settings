@@ -1,3 +1,10 @@
+// import type { App } from 'vue';
+import { useNavigationStore } from '@modules/Navigation/resources/js/stores';
+import { SettingsIcon } from 'lucide-vue-next';
+import { useVfm } from 'vue-final-modal';
+import { VueFinalModal, useModal } from 'vue-final-modal';
+import SettingsModal from './components/SettingsModal.vue';
+
 import '../css/style.css';
 
 /**
@@ -5,13 +12,42 @@ import '../css/style.css';
  * Called during app initialization before mounting
  */
 export function setup() {
-    console.log('Settings module loaded');
+    console.debug('Settings module loaded');
+
+    const navigationStore = useNavigationStore();
+
+    // Register settings modal
+    useModal({
+        component: VueFinalModal,
+        attrs: {
+            modalId: 'settings',
+        },
+        slots: {
+            default: SettingsModal,
+        },
+    });
+
+    // Add Settings item to NavUser
+    navigationStore.addNavUserItem({
+        id: 'settings',
+        type: 'action',
+        title: 'Settings',
+        icon: SettingsIcon,
+        priority: 50,
+        action: () => {
+            const vfm = useVfm();
+            const r = vfm.open('settings');
+
+            console.debug('Settings modal opened', r);
+        },
+    });
+
 }
 
 /**
  * Settings module after mount logic
  * Called after the app has been mounted
  */
-export function afterMount() {
-    console.log('Settings module after mount logic executed');
+export function afterMount(/* app: App */) {
+    console.debug('Settings module after mount logic executed');
 }
