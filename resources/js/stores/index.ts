@@ -3,35 +3,35 @@ import { ref } from 'vue';
 
 // Settings Store
 export const useSettingsStore = defineStore(
-  'modules/settings',
-  () => {
-    // State
-    const counter = ref(0);
+    'modules/settings',
+    () => {
+        // State
+        const counter = ref(0);
 
-    // Actions
-    const increment = () => {
-      counter.value++;
-    };
+        // Actions
+        const increment = () => {
+            counter.value++;
+        };
 
-    const decrement = () => {
-      counter.value--;
-    };
+        const decrement = () => {
+            counter.value--;
+        };
 
-    const reset = () => {
-      counter.value = 0;
-    };
+        const reset = () => {
+            counter.value = 0;
+        };
 
-    return {
-      // State
-      counter,
-      // Actions
-      increment,
-      decrement,
-      reset,
-    };
-  },
-  {
-    // Enable/Disable persistence for this store
-    persist: false,
-  },
+        return {
+            // State
+            counter,
+            // Actions
+            increment,
+            decrement,
+            reset,
+        };
+    },
+    {
+        // Enable/Disable persistence for this store
+        persist: false,
+    },
 );
