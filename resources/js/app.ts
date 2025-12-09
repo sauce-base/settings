@@ -27,19 +27,22 @@ export function setup() {
     });
 
     // Add Settings item to NavUser
-    navigationStore.addNavUserItem({
-        id: 'settings',
-        type: 'action',
-        title: 'Settings',
-        icon: SettingsIcon,
-        priority: 50,
-        action: () => {
-            const vfm = useVfm();
-            const r = vfm.open('settings');
+    navigationStore.addItem(
+        {
+            id: 'settings',
+            type: 'action',
+            title: 'Settings',
+            icon: SettingsIcon,
+            priority: 50,
+            action: () => {
+                const vfm = useVfm();
+                const r = vfm.open('settings');
 
-            console.debug('Settings modal opened', r);
+                console.log('Settings modal opened', r);
+            },
         },
-    });
+        { area: 'user' },
+    );
 }
 
 /**
