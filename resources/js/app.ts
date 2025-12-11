@@ -1,8 +1,6 @@
 // import type { App } from 'vue';
 import { useNavigationStore } from '@modules/Navigation/resources/js/stores';
 import { SettingsIcon } from 'lucide-vue-next';
-import { VueFinalModal, useModal, useVfm } from 'vue-final-modal';
-import SettingsModal from './components/SettingsModal.vue';
 
 import '../css/style.css';
 
@@ -15,33 +13,25 @@ export function setup() {
 
     const navigationStore = useNavigationStore();
 
-    // Register settings modal
-    useModal({
-        component: VueFinalModal,
-        attrs: {
-            modalId: 'settings',
-        },
-        slots: {
-            default: SettingsModal,
-        },
-    });
-
     // Add Settings item to NavUser
-    navigationStore.addItem(
-        {
-            id: 'settings',
-            type: 'action',
-            title: 'Settings',
-            icon: SettingsIcon,
-            priority: 50,
-            action: () => {
-                const vfm = useVfm();
-                const r = vfm.open('settings');
+    const settingsMenuItem = {
+        id: 'settings',
+        type: 'link' as const,
+        title: 'Settings',
+        icon: SettingsIcon,
+        priority: 50,
+        url: route('settings.index'),
+        isActive: route().current('settings.index'),
+    };
 
-                console.log('Settings modal opened', r);
-            },
-        },
+    navigationStore.addItem(
+        settingsMenuItem,
         { area: 'user' },
+    );
+
+    navigationStore.addItem(
+        settingsMenuItem,
+        { area: 'secondary' },
     );
 }
 
