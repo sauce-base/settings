@@ -13,25 +13,17 @@ export function setup() {
 
     const navigationStore = useNavigationStore();
 
-    // Add Settings item to NavUser
-    const settingsMenuItem = {
-        id: 'settings',
-        type: 'link' as const,
-        title: 'Settings',
-        icon: SettingsIcon,
-        priority: 50,
-        url: route('settings.index'),
-        isActive: route().current('settings.index'),
-    };
-
     navigationStore.addItem(
-        settingsMenuItem,
+        {
+            id: 'settings',
+            type: 'link',
+            title: 'Settings',
+            icon: SettingsIcon,
+            priority: 50,
+            url: route('settings.index'),
+            isActive: () => route().current('settings.*'),
+        },
         { area: 'user' },
-    );
-
-    navigationStore.addItem(
-        settingsMenuItem,
-        { area: 'secondary' },
     );
 }
 
