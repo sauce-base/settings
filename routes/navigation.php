@@ -23,23 +23,13 @@ Navigation::add('Settings', fn () => route('settings.index'), function (Section 
     ]);
 });
 
-// Settings sidebar - General
-Navigation::add('General', fn () => route('settings.index'), function (Section $section) {
-    $section->attributes([
-        'group' => 'settings',
-        'slug' => 'settings',
-        'icon' => 'settings',
-        'order' => 10,
-    ]);
-});
-
 // Settings sidebar - Profile
 Navigation::add('Profile', fn () => route('settings.profile'), function (Section $section) {
     $section->attributes([
         'group' => 'settings',
         'slug' => 'profile',
         'icon' => 'profile',
-        'order' => 20,
+        'order' => 10,
     ]);
 });
 
@@ -50,9 +40,5 @@ Navigation::add('Settings', fn () => route('settings.index'), function (Section 
         'slug' => 'settings',
         'icon' => 'settings',
         'order' => 10,
-        'badge' => [
-            'content' => '1',
-            'variant' => 'destructive',
-        ],
     ]);
 });

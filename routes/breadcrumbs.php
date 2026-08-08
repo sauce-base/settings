@@ -3,15 +3,9 @@
 use Saucebase\Breadcrumbs\Breadcrumbs;
 use Saucebase\Breadcrumbs\Generator as Trail;
 
-// Settings index
-Breadcrumbs::for('settings.index', function (Trail $trail) {
-    $trail->parent('dashboard');
-    $trail->push('settings.index', route('settings.index'));
-});
-
 // Profile view
 Breadcrumbs::for('settings.profile', function (Trail $trail) {
-    $trail->parent('settings.index');
+    $trail->parent('dashboard');
     $trail->push('settings.profile', route('settings.profile'));
 });
 

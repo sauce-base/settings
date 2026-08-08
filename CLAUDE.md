@@ -1,26 +1,25 @@
 # Settings Module
 
-User profile management, avatar uploads, password changes, and application settings.
+User profile management, avatar uploads, and password changes.
 
 ## Key Files
 
 | Layer | Files |
 |-------|-------|
-| Controllers | `ProfileController` (show, edit, updateInfo, updateAvatar, deleteAvatar), `PasswordController` (edit, update), `SettingsController` (index) |
+| Controllers | `ProfileController` (show, edit, updateInfo, updateAvatar, deleteAvatar), `PasswordController` (edit, update) |
 | Requests | `UpdateProfileInfoRequest` (name, email), `UpdateProfileAvatarRequest` (image, max 2MB), `UpdatePasswordRequest` (current_password, confirmed new) |
-| Filament | `SettingsPlugin` (nav group), `GeneralSettings` page (placeholder) |
-| Pages | `Index`, `Profile`, `Profile/Edit`, `Profile/ChangePassword` |
+| Pages | `Profile`, `Profile/Edit`, `Profile/ChangePassword` |
 | Layout | Uses core `@/layouts/SettingsLayout.vue` (shared infrastructure for all settings pages) |
 | Components | `PageHeader` (module-specific) |
 
-**No models or migrations** — this module operates on the core `User` model.
+Profile settings operate on the core `User` model.
 
 ## Routes
 
 All routes require `auth`, `verified`, `role:admin|user` middleware:
 
 ```
-GET    /settings                     → settings.index
+GET    /settings                     → redirects to settings.profile
 GET    /settings/profile             → settings.profile
 GET    /settings/profile/edit        → settings.profile.edit
 PATCH  /settings/profile/info        → settings.profile.update-info
@@ -55,7 +54,7 @@ Profile page shows connected providers with connect/disconnect buttons. Delegate
 ### Navigation
 Configured in `routes/navigation.php` via Spatie Navigation. Three groups:
 - `user` — "Settings" link (order 10)
-- `settings` — "General" (10) and "Profile" (20) in sidebar
+- `settings` — "Profile" in sidebar
 - `secondary` — "Settings" with destructive badge
 
 Other modules can add items to the `settings` group from their own `routes/navigation.php`. Frontend reads from `page.props.navigation?.settings`.
@@ -67,7 +66,7 @@ php artisan test --testsuite=Modules --filter='^Modules\\Settings\\Tests'  # PHP
 npx playwright test --project="@settings*"                 # E2E
 ```
 
-E2E tests in `tests/e2e/index.spec.ts` — basic settings page accessibility.
+E2E tests cover profile behavior.
 
 ## Gotchas
 
