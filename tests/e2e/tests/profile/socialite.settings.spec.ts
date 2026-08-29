@@ -1,0 +1,51 @@
+import { expect, test } from '@e2e/fixtures';
+
+test.describe('Profile Socialite Settings', () => {
+    test.describe.configure({ mode: 'serial' });
+
+    test('keeps a disabled connected provider available for disconnect', async ({
+        page,
+        laravel,
+        credentials,
+        loginAs,
+    }) => {
+        const providerId = `e2e-disabled-google-${Date.now()}`;
+
+        await laravel.query('UPDATE settings SET payload = ? WHERE name = ?', [
+            '[]',
+            'enabled_socialite_providers',
+        ]);
+        await laravel.query(
+            'INSERT INTO social_accounts (user_id, provider, provider_id, last_login_at, created_at, updated_at) SELECT id, ?, ?, NOW(), NOW(), NOW() FROM users WHERE email = ?',
+            ['google', providerId, credentials.user.email],
+        );
+
+        try {
+            await loginAs(credentials.user);
+            await page.goto('/settings/profile');
+
+            await expect(
+                page.getByTestId('socialite-account-google'),
+            ).toBeVisible();
+            await expect(
+                page.getByTestId('connect-socialite-google'),
+            ).not.toBeVisible();
+
+            await page.getByTestId('disconnect-socialite-google').click();
+            await page.getByTestId('confirm-socialite-disconnect').click();
+
+            await expect(
+                page.getByTestId('socialite-account-google'),
+            ).not.toBeVisible();
+        } finally {
+            await laravel.query(
+                'DELETE FROM social_accounts WHERE provider = ? AND provider_id = ?',
+                ['google', providerId],
+            );
+            await laravel.query(
+                'UPDATE settings SET payload = ? WHERE name = ?',
+                ['[]', 'enabled_socialite_providers'],
+            );
+        }
+    });
+});
