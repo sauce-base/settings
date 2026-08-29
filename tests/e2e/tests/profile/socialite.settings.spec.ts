@@ -10,17 +10,26 @@ test.describe('Profile Socialite Settings', () => {
         loginAs,
     }) => {
         const providerId = `e2e-disabled-google-${Date.now()}`;
-
-        await laravel.query('UPDATE settings SET payload = ? WHERE name = ?', [
-            '[]',
-            'enabled_socialite_providers',
-        ]);
-        await laravel.query(
-            'INSERT INTO social_accounts (user_id, provider, provider_id, last_login_at, created_at, updated_at) SELECT id, ?, ?, NOW(), NOW(), NOW() FROM users WHERE email = ?',
-            ['google', providerId, credentials.user.email],
+        const [socialiteProviderSetting] = await laravel.select(
+            'SELECT payload FROM settings WHERE name = :name',
+            { name: 'enabled_socialite_providers' },
         );
+        const originalPayload = socialiteProviderSetting?.payload;
+
+        if (typeof originalPayload !== 'string') {
+            throw new Error('Socialite provider setting was not found.');
+        }
 
         try {
+            await laravel.query(
+                'UPDATE settings SET payload = ? WHERE name = ?',
+                ['[]', 'enabled_socialite_providers'],
+            );
+            await laravel.query(
+                'INSERT INTO social_accounts (user_id, provider, provider_id, last_login_at, created_at, updated_at) SELECT id, ?, ?, NOW(), NOW(), NOW() FROM users WHERE email = ?',
+                ['google', providerId, credentials.user.email],
+            );
+
             await loginAs(credentials.user);
             await page.goto('/settings/profile');
 
@@ -44,7 +53,7 @@ test.describe('Profile Socialite Settings', () => {
             );
             await laravel.query(
                 'UPDATE settings SET payload = ? WHERE name = ?',
-                ['[]', 'enabled_socialite_providers'],
+                [originalPayload, 'enabled_socialite_providers'],
             );
         }
     });
