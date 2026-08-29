@@ -26,7 +26,7 @@ test.describe('Profile Socialite Settings', () => {
                 ['[]', 'enabled_socialite_providers'],
             );
             await laravel.query(
-                'INSERT INTO social_accounts (user_id, provider, provider_id, last_login_at, created_at, updated_at) SELECT id, ?, ?, NOW(), NOW(), NOW() FROM users WHERE email = ?',
+                'INSERT INTO social_accounts (user_id, provider, provider_id, last_login_at, created_at, updated_at) SELECT id, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM users WHERE email = ?',
                 ['google', providerId, credentials.user.email],
             );
 
